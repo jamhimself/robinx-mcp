@@ -1,0 +1,18 @@
+{
+  "name": "hoodscope-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for HoodScope — Robinhood Chain deployer reputation, insider detection, and token verdicts. Paid tools auto-pay via x402 (USDC on Base).",
+  "type": "module",
+  "bin": { "hoodscope-mcp": "server.js" },
+  "files": ["server.js", "tools.js", "pay.js", "README.md"],
+  "scripts": { "start": "node server.js" },
+  "keywords": ["mcp", "x402", "robinhood-chain", "memecoin", "deployer-reputation", "crypto"],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@x402/fetch": "^2.11.0",
+    "@x402/evm": "^2.11.0",
+    "viem": "^2.21.0"
+  },
+  "engines": { "node": ">=20.0.0" }
+}
