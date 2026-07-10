@@ -1,0 +1,36 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.jamhimself/robinx-mcp",
+  "description": "Robinhood Chain deployer reputation, insider detection & token buy-risk verdicts. x402-paid.",
+  "repository": {
+    "url": "https://github.com/jamhimself/robinx-mcp",
+    "source": "github"
+  },
+  "version": "0.2.0",
+  "websiteUrl": "https://robinx.io",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.robinx.io/mcp"
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "robinx-mcp",
+      "version": "0.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Optional. A funded Base (EVM) private key so paid tools auto-pay via x402 (USDC on Base). Omit to use only the free tools.",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string",
+          "name": "ROBINX_WALLET_KEY"
+        }
+      ]
+    }
+  ]
+}
