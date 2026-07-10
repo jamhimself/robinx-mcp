@@ -1,0 +1,19 @@
+# Smithery MCP manifest — https://smithery.ai
+# Lists robinx-mcp so Claude Desktop / Cursor / MCP clients can discover + install it.
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      ROBINX_WALLET_KEY:
+        type: string
+        title: "Base wallet private key (optional)"
+        description: "Funded Base wallet private key for x402 auto-pay on paid tools ($0.01-0.02 USDC/call). Omit to use free tools only; paid tools then return the price instead of data."
+  commandFunction: |
+    (config) => ({
+      command: 'npx',
+      args: ['-y', 'robinx-mcp'],
+      env: config.ROBINX_WALLET_KEY ? { ROBINX_WALLET_KEY: config.ROBINX_WALLET_KEY } : {}
+    })
+  exampleConfig:
+    ROBINX_WALLET_KEY: ""
