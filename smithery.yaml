@@ -8,7 +8,7 @@ startCommand:
       ROBINX_WALLET_KEY:
         type: string
         title: "Base wallet private key (optional)"
-        description: "Funded Base wallet private key for x402 auto-pay on paid tools ($0.01-0.02 USDC/call). Omit to use free tools only; paid tools then return the price instead of data."
+        description: "Funded Base wallet private key for x402 auto-pay on paid tools ($0.01-0.05 USDC/call). Omit to use free tools only; paid tools then return the price instead of data."
   commandFunction: |
     (config) => ({
       command: 'npx',

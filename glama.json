@@ -1,0 +1,9 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": ["jamhimself"],
+  "name": "RobinX",
+  "description": "Signals-intelligence API + MCP for Robinhood Chain (chain 4663): deployer reputation scores, insider-linked flags, and measured X-caller accuracy — every caller and deployer graded against real on-chain price since chain genesis.",
+  "category": "crypto",
+  "homepage": "https://robinx.io",
+  "support": "mailto:jaime@robinx.io"
+}

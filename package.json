@@ -1,8 +1,8 @@
 {
   "name": "robinx-mcp",
-  "version": "0.2.0",
+  "version": "0.6.1",
   "mcpName": "io.github.jamhimself/robinx-mcp",
-  "description": "MCP server for RobinX — Robinhood Chain deployer reputation, insider detection, and token verdicts. Paid tools auto-pay via x402 (USDC on Base).",
+  "description": "MCP server for RobinX — Robinhood Chain deployer reputation, insider-flow detection, and token verdicts. Paid tools auto-pay via x402 (USDC on Base).",
   "type": "module",
   "bin": {
     "robinx-mcp": "server.js"

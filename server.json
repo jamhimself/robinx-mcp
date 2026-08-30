@@ -1,12 +1,12 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.jamhimself/robinx-mcp",
-  "description": "Robinhood Chain deployer reputation, insider detection & token buy-risk verdicts. x402-paid.",
+  "description": "Robinhood Chain (4663) caller accuracy + token intel, graded vs real price since genesis. x402-paid",
   "repository": {
     "url": "https://github.com/jamhimself/robinx-mcp",
     "source": "github"
   },
-  "version": "0.2.0",
+  "version": "0.6.1",
   "websiteUrl": "https://robinx.io",
   "remotes": [
     {
@@ -18,7 +18,7 @@
     {
       "registryType": "npm",
       "identifier": "robinx-mcp",
-      "version": "0.2.0",
+      "version": "0.6.1",
       "transport": {
         "type": "stdio"
       },

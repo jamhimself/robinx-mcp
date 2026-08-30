@@ -1,18 +1,32 @@
 # RobinX MCP
 
-Model Context Protocol server for **RobinX** — deployer reputation, insider detection, and token buy-risk verdicts for **Robinhood Chain** (chain 4663) memecoins, built from complete on-chain history. Gives any MCP agent (Claude Desktop, Cursor, …) a one-hop answer to *"who launched this token and should I trust it?"* — even seconds after launch, because it scores the deployer, not just the contract.
+Model Context Protocol server for **RobinX** — deployer reputation, insider-flow detection, and token buy-risk verdicts for **Robinhood Chain** (chain 4663) memecoins, built from complete on-chain history. Gives any MCP agent (Claude Desktop, Cursor, …) a one-hop answer to *"who launched this token and should I trust it?"* — even seconds after launch, because it scores the deployer, not just the contract.
 
-Paid tools settle **$0.01–0.02 USDC per call on Base** via the x402 protocol. Configure a funded wallet key and the agent pays automatically; leave it out and paid tools return the price instead of data.
+RobinX measures who is actually right about Robinhood Chain — callers and deployers graded against real price since chain genesis.
+
+Paid tools settle **$0.01–0.05 USDC per call on Base** via the x402 protocol. Configure a funded wallet key and the agent pays automatically; leave it out and paid tools return the price instead of data. All 23 tools are read-only (`readOnlyHint`) against the external RobinX API (`openWorldHint`).
 
 ## Tools
 
 | Tool | Price | What it does |
 |---|---|---|
+| `robinx_stats` | free | Coverage stats: deployers scored, tokens indexed, insider-linked wallets flagged (discovery) |
+| `robinx_search` | free | Resolve a `$SYMBOL` / name / address to ranked contract candidates + symbol-collision warning (fake-ticker scam screen) |
+| `robinx_basket` | free | Live forward paper-basket — the lookahead-free public track record of the signal |
+| `robinx_wallet` | free | Wallet reputation for any address: deployer record + insider-flow history (off-market supply, WETH realized) |
+| `robinx_caller` | free | Caller Report Card: an X account's measured track record — early_rate, momentum_rate, median 1h forward return, cluster flag, recent calls (measured since chain genesis; calls preserved as captured) |
+| `robinx_report` | $0.05 | The full token dossier in one call: verdict + deployer history + measured X callers + basket status + forensics. First 25/day per IP free |
+| `robinx_smart_holders` | $0.05 | Holders crossed with the chain-wide extraction/deployer index — strong signal, ambiguous direction, not a buy call |
+| `robinx_entity` | $0.05 | A wallet's appearances across the accumulated holder-snapshot archive (balance then/now per token + identity) |
+| `robinx_pulse` | $0.04 | Real-time X synthesis: narrative, sentiment, red flags, and proven early-caller activity (measured lift, not follower counts) |
+| `robinx_structure` | $0.03 | Labeled holder-structure diff over ~24h: frozen/added/trimmed/exited wallets with identity + insider-linked labels, and a rotation/distribution/accumulation verdict. First GET queues a free scan (202, poll in ~15-60s) |
 | `robinx_verdict` | $0.02 | Composite buy-risk verdict: deployer reputation + insider-distribution flags + activity → `trusted / mixed / avoid / serial_spammer / new_deployer` with reasons |
+| `robinx_signals` | $0.02 | Pollable stream of fresh calls by measured early-callers (`since` cursor, `min_early_rate`, `limit`) — the highest-alpha event the corpus emits |
 | `robinx_deployer` | $0.01 | Deployer rap sheet: launched / real / dead counts, best-token volume, insider flag, 0-100 score |
 | `robinx_token` | $0.01 | Token stats: swaps, WETH volume, unique traders, real-or-thin, linked deployer score |
-| `robinx_leaderboard` | $0.01 | Top trusted deployers on the chain |
-| `robinx_stats` | free | Coverage stats (discovery) |
+| `robinx_feed` | $0.01 | Newest launches scored by deployer reputation — pollable (`min_score`, `since` cursor, `limit`) |
+| `robinx_callers` | $0.01 | Proven X caller-lift leaderboard: who measurably moves price (median 1h forward return + early-rate) |
+| `robinx_leaderboard` | $0.01 | Top trusted deployers: every wallet scoring >= 70, ranked — the watch-list of proven deployers whose next launch is the high-signal event |
 
 ## Install — Claude Desktop
 
@@ -48,7 +62,7 @@ Add to `~/.cursor/mcp.json` (or a project `.cursor/mcp.json`) with the same `com
 
 ## Without a wallet
 
-Every paid tool still works as a price probe: it returns `PAYMENT REQUIRED ($0.0X USDC)` plus the x402 requirements, so an agent can decide whether to pay. The free `robinx_stats` tool always works.
+Every paid tool still works as a price probe: it returns `PAYMENT REQUIRED ($0.0X USDC)` plus the x402 requirements, so an agent can decide whether to pay. The free tools (`robinx_stats`, `robinx_search`, `robinx_basket`, `robinx_wallet`, `robinx_caller`) always work, `robinx_report` serves its free tier (25/day per IP), and `robinx_structure` still queues its free scan.
 
 ## Run locally (development)
 

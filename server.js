@@ -13,7 +13,13 @@ import { callEndpoint, walletAddressHint } from './pay.js';
 const log = (...a) => console.error('[robinx-mcp]', ...a); // stderr only
 
 const BASE_URL = await resolveBaseUrl();
-const server = new McpServer({ name: 'robinx', version: '0.1.0' });
+const server = new McpServer(
+  { name: 'robinx', version: '0.6.0' },
+  {
+    instructions:
+      'RobinX measures who is actually RIGHT about Robinhood Chain (4663): every X caller and every deployer graded against real on-chain price since chain genesis. Free: robinx_stats, robinx_basket, robinx_wallet, robinx_search (resolve a $symbol to an address — beware fake tickers), robinx_caller (an X account\'s measured track record — use before trusting any alpha caller). Best paid calls: robinx_signals (fresh calls by measured early-callers), robinx_report (the full dossier), robinx_smart_holders. Paid tools settle USDC on Base via x402 automatically when ROBINX_WALLET_KEY is a funded Base wallet; without it they return the price instead of data.',
+  }
+);
 
 for (const t of TOOLS) {
   const inputSchema = {};
@@ -26,6 +32,9 @@ for (const t of TOOLS) {
       title: t.title,
       description: t.description,
       ...(Object.keys(inputSchema).length ? { inputSchema } : {}),
+      // Every tool is a pure read against the external RobinX API (paid ones spend
+      // USDC via x402 but never mutate any RobinX state).
+      annotations: { title: t.title, readOnlyHint: true, destructiveHint: false, openWorldHint: true },
     },
     async (args) => {
       try {

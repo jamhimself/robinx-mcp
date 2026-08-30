@@ -55,6 +55,11 @@ export async function callEndpoint(url, paid) {
   if (!wf) {
     // no wallet — fetch once to surface the 402 requirements so the agent/user knows the price
     const res = await fetch(url);
+    // Some paid endpoints answer without a 402 (report free tier → 200, structure
+    // queued-scan → 202): pass those through as real responses, not payment notices.
+    if (res.status !== 402) {
+      return { ok: res.ok, status: res.status, body: await res.json().catch(() => null) };
+    }
     let req = null; try { req = await res.json(); } catch {}
     return {
       ok: false, status: res.status, paymentRequired: true,
