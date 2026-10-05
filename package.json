@@ -1,12 +1,37 @@
 {
-  "name": "hoodscope-mcp",
-  "version": "0.1.0",
-  "description": "MCP server for HoodScope — Robinhood Chain deployer reputation, insider detection, and token verdicts. Paid tools auto-pay via x402 (USDC on Base).",
+  "name": "robinx-mcp",
+  "version": "0.6.2",
+  "mcpName": "io.github.jamhimself/robinx-mcp",
+  "description": "Robinhood Chain MCP server for AI agents and trading bots: rug checks, deployer reputation, measured X callers and live call signals. Free tools plus x402 pay-per-call (USDC on Base).",
   "type": "module",
-  "bin": { "hoodscope-mcp": "server.js" },
-  "files": ["server.js", "tools.js", "pay.js", "README.md"],
-  "scripts": { "start": "node server.js" },
-  "keywords": ["mcp", "x402", "robinhood-chain", "memecoin", "deployer-reputation", "crypto"],
+  "bin": {
+    "robinx-mcp": "server.js"
+  },
+  "files": [
+    "server.js",
+    "tools.js",
+    "pay.js",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "robinhood-chain",
+    "robinhood-chain-mcp",
+    "robinhood",
+    "ai-agent",
+    "trading-bot",
+    "rug-check",
+    "token-scanner",
+    "deployer-reputation",
+    "memecoin",
+    "x402",
+    "crypto"
+  ],
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
@@ -14,5 +39,12 @@
     "@x402/evm": "^2.11.0",
     "viem": "^2.21.0"
   },
-  "engines": { "node": ">=20.0.0" }
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamhimself/robinx-mcp.git"
+  },
+  "homepage": "https://robinx.io"
 }

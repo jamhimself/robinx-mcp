@@ -1,17 +1,17 @@
-// x402 auto-pay for the HoodScope MCP server. If HOODSCOPE_WALLET_KEY is set, paid
+// x402 auto-pay for the RobinX MCP server. If ROBINX_WALLET_KEY is set, paid
 // tools transparently pay their per-call USDC price on Base; otherwise the caller gets
 // a clear "wallet not configured" message with the 402 details.
 // Reuses the settlement-proven buyer pattern (wrapFetchWithPaymentFromConfig + ExactEvmScheme).
 const BASE = 'eip155:8453';
 const USDC_DECIMALS = 6;
-const MAX_USD_PER_CALL = Number(process.env.HOODSCOPE_MAX_USD_PER_CALL || '0.10'); // hard per-call ceiling
+const MAX_USD_PER_CALL = Number(process.env.ROBINX_MAX_USD_PER_CALL || '0.10'); // hard per-call ceiling
 
 let _wrappedFetch = null;
 let _initErr = null;
 
 async function getWrappedFetch() {
   if (_wrappedFetch || _initErr) return _wrappedFetch;
-  const key = process.env.HOODSCOPE_WALLET_KEY;
+  const key = process.env.ROBINX_WALLET_KEY;
   if (!key) { _initErr = 'no-key'; return null; }
   try {
     const { privateKeyToAccount } = await import('viem/accounts');
@@ -41,10 +41,10 @@ async function getWrappedFetch() {
 }
 
 export function walletAddressHint() {
-  return process.env.HOODSCOPE_WALLET_KEY ? 'configured' : 'not configured';
+  return process.env.ROBINX_WALLET_KEY ? 'configured' : 'not configured';
 }
 
-// GET a HoodScope endpoint. paid=false → plain fetch. paid=true → x402 auto-pay if a
+// GET a RobinX endpoint. paid=false → plain fetch. paid=true → x402 auto-pay if a
 // wallet is configured; else return a structured "payment required" note.
 export async function callEndpoint(url, paid) {
   if (!paid) {
@@ -55,11 +55,16 @@ export async function callEndpoint(url, paid) {
   if (!wf) {
     // no wallet — fetch once to surface the 402 requirements so the agent/user knows the price
     const res = await fetch(url);
+    // Some paid endpoints answer without a 402 (report free tier → 200, structure
+    // queued-scan → 202): pass those through as real responses, not payment notices.
+    if (res.status !== 402) {
+      return { ok: res.ok, status: res.status, body: await res.json().catch(() => null) };
+    }
     let req = null; try { req = await res.json(); } catch {}
     return {
       ok: false, status: res.status, paymentRequired: true,
       note: _initErr === 'no-key'
-        ? 'This is a paid HoodScope endpoint. Set HOODSCOPE_WALLET_KEY (a funded Base USDC wallet private key) in the MCP server env to enable auto-pay.'
+        ? 'This is a paid RobinX endpoint. Set ROBINX_WALLET_KEY (a funded Base USDC wallet private key) in the MCP server env to enable auto-pay.'
         : `x402 wallet init failed: ${_initErr}`,
       price: req?.accepts?.[0]?.amount ? `${Number(req.accepts[0].amount) / 1e6} USDC` : undefined,
       body: req,
