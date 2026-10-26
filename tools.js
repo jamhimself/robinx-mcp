@@ -45,7 +45,7 @@ export const TOOLS = [
     paid: true,
     title: 'Robinhood Chain token verdict',
     description:
-      'Composite BUY-RISK verdict for a Robinhood Chain (chain 4663) memecoin: combines the deployer\'s full-history reputation, insider-distribution flags, and on-chain activity into a single signal (trusted / mixed / avoid / serial_spammer / new_deployer) with plain-English reasons. Works even on a token that launched seconds ago, because it scores WHO deployed it. Costs $0.02 USDC on Base.',
+      'Composite BUY-RISK verdict for a Robinhood Chain (chain 4663) memecoin: combines the deployer\'s full-history reputation, insider-distribution flags, and on-chain activity into a single signal (trusted / mixed / avoid / serial_spammer / new_deployer / deployer_unknown; tokenized_stock for one of Robinhood\'s own tokenized stocks or ETFs, a market, not a launch, with no deployer judgment) with plain-English reasons. Works even on a token that launched seconds ago, because it scores WHO deployed it. Costs $0.02 USDC on Base.',
     input: { token: { type: 'string', description: 'The token contract address (0x…) on Robinhood Chain' } },
     required: ['token'],
     path: (a) => `/verdict/${encodeURIComponent(a.token)}`,
@@ -53,9 +53,9 @@ export const TOOLS = [
   {
     name: 'robinx_deployer',
     paid: true,
-    title: 'Deployer reputation rap sheet',
+    title: 'Deployer reputation record',
     description:
-      'Full reputation rap sheet for a deployer wallet on Robinhood Chain: how many tokens it launched, how many reached real activity vs. died, best-token volume, whether it distributes tokens wallet-to-wallet (insider-prep pattern), and a 0-100 score. Costs $0.01 USDC on Base.',
+      'Full reputation record for a deployer wallet on Robinhood Chain (Robinhood\'s tokenized-stock issuer answers stock_issuer with no score: its launches are tokenized stocks and ETFs, markets rather than launches): how many tokens it launched, how many reached real activity vs. died, best-token volume, whether it distributes tokens wallet-to-wallet (insider-prep pattern), and a 0-100 score. Costs $0.01 USDC on Base.',
     input: { address: { type: 'string', description: 'The deployer wallet address (0x…)' } },
     required: ['address'],
     path: (a) => `/deployer/${encodeURIComponent(a.address)}`,
@@ -65,7 +65,7 @@ export const TOOLS = [
     paid: true,
     title: 'Token on-chain stats',
     description:
-      'On-chain activity for a Robinhood Chain token: swap count, WETH volume, unique traders, whether it crossed the real-activity threshold, and its deployer\'s score. Costs $0.01 USDC on Base.',
+      'On-chain activity for a Robinhood Chain token: swap count, WETH volume, unique traders, whether it crossed the real-activity threshold, and its deployer\'s score (null, with its basis, for one of Robinhood\'s tokenized stocks: a market, not a launch, labelled in `stock`). Costs $0.01 USDC on Base.',
     input: { address: { type: 'string', description: 'The token contract address (0x…)' } },
     required: ['address'],
     path: (a) => `/token/${encodeURIComponent(a.address)}`,
@@ -75,7 +75,7 @@ export const TOOLS = [
     paid: true,
     title: 'Live scored launch feed',
     description:
-      'Poll the newest Robinhood Chain token launches, each auto-scored by its deployer\'s reputation (trusted / mixed / avoid / serial_spammer / new_deployer). Use min_score=70 to see ONLY launches from proven deployers (about 1% of launches), since=<cursor from a prior call> to get only new launches, limit=N (max 100). Designed to be polled. Costs $0.01 USDC on Base.',
+      'Poll the newest Robinhood Chain token launches, each auto-scored by its deployer\'s reputation (trusted / mixed / avoid / serial_spammer / new_deployer / deployer_unknown; a listing by Robinhood\'s tokenized-stock issuer is labelled tokenized_stock and never scored). Use min_score=70 to see ONLY launches from proven deployers (about 1% of launches), since=<cursor from a prior call> to get only new launches, limit=N (max 100). Designed to be polled. Costs $0.01 USDC on Base.',
     input: {
       min_score: { type: 'string', description: 'Only return launches whose deployer scores >= this (e.g. "70" for proven deployers only). Optional.' },
       since: { type: 'string', description: 'Cursor from a previous call (ISO timestamp) — returns only launches newer than it. Optional.' },
@@ -106,7 +106,7 @@ export const TOOLS = [
     paid: true,
     title: 'Proven caller leaderboard',
     description:
-      'Proven X caller-lift leaderboard for Robinhood Chain: which accounts measurably move price — median 1h forward return after their calls, and early-rate (called BEFORE the run vs momentum-riding). Measured lift, not follower counts. Use it to decide whose calls are worth acting on. Costs $0.01 USDC on Base.',
+      'Measured X caller leaderboard for Robinhood Chain, ordered by rank_score (the 95% Wilson lower bound on the early rate, so a 3-of-4 record ranks below 10-of-19): early rate (called BEFORE the run vs momentum-riding), median 1h price move after the call, graded-call count and an evidence label (thin/fair/solid); the written rules travel in the response. Measured, not follower counts. Costs $0.01 USDC on Base.',
     input: {},
     required: [],
     path: () => `/callers`,
@@ -126,7 +126,7 @@ export const TOOLS = [
     paid: false,
     title: 'Live paper-basket record (free)',
     description:
-      'Free live forward paper-basket: every Robinhood Chain launch from a proven deployer, entered +30min after launch and held. The lookahead-free public track record of the RobinX signal — use it to judge whether the signal is worth paying for.',
+      'Free live forward paper-basket: every Robinhood Chain launch from a proven deployer, entered +30min after launch and held. The forward public track record of the RobinX signal — use it to judge whether the signal is worth paying for.',
     input: {},
     required: [],
     path: () => `/basket`,
@@ -134,9 +134,9 @@ export const TOOLS = [
   {
     name: 'robinx_report',
     paid: true,
-    title: 'Full token dossier',
+    title: 'Full token report',
     description:
-      'The FULL token dossier in one call: composite verdict with reasons, deployer rap sheet + launch-by-launch history, token vitals, measured X callers (early-rate, median 1h lift, coordination flags), paper-basket status, and supply-forensics results if computed. The single best first call on any Robinhood Chain token. Costs $0.05 USDC on Base. The free version of the same report is the page https://robinx.io/t/{token}.',
+      'The FULL token report in one call: composite verdict with reasons, deployer record + launch-by-launch history, token vitals, measured X callers (early-rate, median 1h lift, coordination flags), paper-basket status, and supply-forensics results if computed. The single best first call on any Robinhood Chain token. Costs $0.05 USDC on Base. The free version of the same report is the page https://robinx.io/t/{token}.',
     input: { token: { type: 'string', description: 'The token contract address (0x…) on Robinhood Chain' } },
     required: ['token'],
     path: (a) => `/report/${encodeURIComponent(a.token)}`,
@@ -156,7 +156,7 @@ export const TOOLS = [
     paid: true,
     title: 'Holder structure diff',
     description:
-      'Labeled holder-structure diff for a Robinhood Chain token: who FROZE (to the wei), who added, who trimmed, who exited over ~24h — every notable wallet stamped with what RobinX knows (insider-linked extraction record, deployer rap sheet, ENS + Farcaster identity with multi-wallet entities collapsed, round-number off-market allocation flags), plus a structure verdict: rotation vs top-distribution vs accumulation. The repricing-or-rug call that price data cannot make. The first GET auto-queues a free scan (HTTP 202 — poll again in ~15-60s); once computed, results cost $0.03 USDC on Base.',
+      'Labeled holder-structure diff for a Robinhood Chain token: who FROZE (to the wei), who added, who trimmed, who exited over ~24h — every notable wallet stamped with what RobinX knows (insider-linked extraction record, deployer record, ENS + Farcaster identity with multi-wallet entities collapsed, round-number off-market allocation flags), plus a structure verdict: rotation vs top-distribution vs accumulation. The repricing-or-rug call that price data cannot make. The first GET auto-queues a free scan (HTTP 202 — poll again in ~15-60s); once computed, results cost $0.03 USDC on Base.',
     input: { token: { type: 'string', description: 'The token contract address (0x…) on Robinhood Chain' } },
     required: ['token'],
     path: (a) => `/structure/${encodeURIComponent(a.token)}`,
@@ -176,7 +176,7 @@ export const TOOLS = [
     paid: false,
     title: 'Caller Report Card (free)',
     description:
-      'Free MEASURED track record for any X account that has called Robinhood Chain tokens: early_rate (share of calls placed BEFORE a run), momentum_rate (calls after the pump — exit-liquidity pattern), median 1h forward return, mutual-follow-cluster flag, and recent calls. Measured against real on-chain price since chain genesis; calls preserved as captured, so deletion does not scrub the record. Use before trusting any "alpha caller".',
+      'Free MEASURED track record for any X account that has called Robinhood Chain tokens: early_rate (share of calls placed BEFORE a run), momentum_rate (calls after the pump — exit-liquidity pattern), median 1h forward return, coordinated-cluster flag, and recent calls. Measured against real on-chain price since chain genesis; calls preserved as captured, so deletion does not scrub the record. Use before trusting any "alpha caller".',
     input: { handle: { type: 'string', description: 'X handle, with or without @' } },
     required: ['handle'],
     path: (a) => `/caller/${encodeURIComponent(String(a.handle || '').replace(/^@/, ''))}`,
@@ -186,16 +186,18 @@ export const TOOLS = [
     paid: true,
     title: 'Fresh calls by measured early-callers',
     description:
-      'Pollable stream of fresh Robinhood Chain calls by X accounts with a MEASURED early-call record (default: early_rate >= 0.5, >= 4 calls, coordinated clusters excluded). Each item carries the caller\'s full measured record + the token\'s deployer score and FDV. A measured record describes past calls, not future ones. Use since=<cursor from a prior call> to poll for only-new calls. Costs $0.02 USDC on Base.',
+      'Pollable stream of fresh Robinhood Chain calls by X accounts with a MEASURED early-call record (default since caller-rules-2: rank_score >= 0.3, the 95% Wilson lower bound on the early rate = grade B, on >= 4 graded calls, coordinated clusters excluded). Each item carries the caller\'s full measured record + the token\'s deployer score and FDV. A measured record describes past calls, not future ones. Use since=<cursor from a prior call> to poll for only-new calls. Costs $0.02 USDC on Base.',
     input: {
       since: { type: 'string', description: 'captured_at cursor from a prior call — returns only calls newer than it. Optional.' },
-      min_early_rate: { type: 'string', description: 'Only callers whose measured early_rate >= this (default 0.5). Optional.' },
+      min_rank_score: { type: 'string', description: 'Only callers whose rank_score (the 95% Wilson lower bound on the early rate) >= this. Default 0.3 = grade B. Optional.' },
+      min_early_rate: { type: 'string', description: 'An optional extra floor on the raw early_rate. No default since caller-rules-2.' },
       limit: { type: 'string', description: 'Max calls to return, 1-100 (default 25). Optional.' },
     },
     required: [],
     path: (a) => {
       const qs = new URLSearchParams();
       if (a.since) qs.set('since', a.since);
+      if (a.min_rank_score) qs.set('min_rank_score', a.min_rank_score);
       if (a.min_early_rate) qs.set('min_early_rate', a.min_early_rate);
       if (a.limit) qs.set('limit', a.limit);
       const s = qs.toString();
@@ -239,7 +241,7 @@ export const TOOLS = [
     paid: true,
     title: 'Agent feature row (token-level, one call)',
     description:
-      'THE FEATURE ROW FOR A TRADING AGENT. One call returns the token-level feature row for a Robinhood Chain token, ready to fold into your own model: immutable launch facts (deployer, launch block, age); current activity (swaps, WETH volume, distinct traders, is_real and the exact block it crossed that threshold); the deployer\'s current track record; the latest price/FDV quote with its true observation time; and observed social measurements (exact mention counts, distinct accounts, first mention, 24h velocity, how many mentioning accounts are MEASURED callers with a track record, the best early-rate among them, and what share sit in a mutual-follow cluster — one correlated voice rather than independent confirmation). The response is split by epistemic status: current_state is recomputed in place and carries NO history, so joining it to a past timestamp is lookahead bias; observed sits on an immutable capture clock. Robinhood Chain only. RobinX publishes INPUTS, not predictions — no score of expected return, no recommendation, no financial advice; backtest them against your own forward returns. Costs $0.03 USDC on Base.',
+      'THE FEATURE ROW FOR A TRADING AGENT. One call returns the token-level feature row for a Robinhood Chain token, ready to fold into your own model: immutable launch facts (deployer, launch block, age); current activity (swaps, WETH volume, distinct traders, is_real and the exact block it crossed that threshold); the deployer\'s current track record; the latest price/FDV quote with its true observation time; and observed social measurements (exact mention counts, distinct accounts, first mention, 24h velocity, how many mentioning accounts are MEASURED callers with a track record, the best early-rate among them, and what share sit in a coordinated cluster — one correlated voice rather than independent confirmation). The response is split by epistemic status: current_state is recomputed in place and carries NO history, so joining it to a past timestamp is lookahead bias; observed sits on an immutable capture clock. Robinhood Chain only. RobinX publishes INPUTS, not predictions — no score of expected return, no recommendation, no financial advice; backtest them against your own forward returns. Costs $0.03 USDC on Base.',
     input: { token: { type: 'string', description: 'Robinhood Chain token address (0x + 40 hex)' } },
     required: ['token'],
     path: (a) => `/agent/features?token=${encodeURIComponent(a.token)}`,
@@ -278,7 +280,7 @@ export const TOOLS = [
     paid: true,
     title: 'One caller\'s receipts tape',
     description:
-      'The most recent calls by one measured X account, each with the token\'s outcome and any cross-chain records — the full tape behind the free report card. An unknown handle returns a paid EMPTY tape rather than a 404, so you are never charged for a lookup that then errors. Costs $0.02 USDC on Base.',
+      'The receipts behind the free report card: the most recent 100 calls by one X account, each with its post id and URL, capture time, attribution basis, pool, the three prices its grade is made of (at the call, 30 min before, 1 h after), the grade (early / momentum / neither) or why there is none, the token\'s outcome, and any cross-chain records. An unknown handle returns a paid EMPTY tape rather than a 404, so you are never charged for a lookup that then errors. Costs $0.02 USDC on Base.',
     input: { handle: { type: 'string', description: 'X handle, with or without @' } },
     required: ['handle'],
     path: (a) => `/caller/${encodeURIComponent(String(a.handle).replace(/^@/, ''))}/calls`,
@@ -288,7 +290,7 @@ export const TOOLS = [
     paid: true,
     title: 'Tokens ranked by measured-caller weight',
     description:
-      'Robinhood Chain tokens ranked by the MEASURED accuracy weight of the accounts mentioning them, then by distinct voices, then by raw mentions — mutual-follow clusters count once, not once per member. Window selectable with hours=1.48. Costs $0.02 USDC on Base.',
+      'Robinhood Chain tokens ranked by the MEASURED accuracy weight of the accounts mentioning them, then by distinct voices, then by raw mentions — coordinated clusters count once, not once per member. Window selectable with hours=1.48. Costs $0.02 USDC on Base.',
     input: { hours: { type: 'string', description: '1-48, default 24' } },
     path: (a) => `/social/momentum${a.hours ? `?hours=${encodeURIComponent(a.hours)}` : ''}`,
   },

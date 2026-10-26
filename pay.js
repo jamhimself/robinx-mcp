@@ -44,6 +44,27 @@ export function walletAddressHint() {
   return process.env.ROBINX_WALLET_KEY ? 'configured' : 'not configured';
 }
 
+// A paid request with a method and a JSON body (10-18: Nansen's agentic payments are POST endpoints). The same wrapped
+// fetch, the same per-call ceiling; without a wallet the 402's price is returned, nothing paid.
+export async function callEndpointJson(url, { method = 'POST', body = null, headers = {} } = {}) {
+  const init = { method, headers: { 'Content-Type': 'application/json', ...headers }, body: body == null ? undefined : JSON.stringify(body) };
+  const wf = await getWrappedFetch();
+  if (!wf) {
+    const res = await fetch(url, init);
+    let req = null; try { req = await res.json(); } catch {}
+    if (res.status !== 402) return { ok: res.ok, status: res.status, body: req };
+    const hdr = res.headers.get('PAYMENT-REQUIRED') || res.headers.get('X-PAYMENT-REQUIRED');
+    let accepts = req?.accepts; if (!accepts && hdr) { try { accepts = JSON.parse(Buffer.from(hdr, 'base64').toString()).accepts; } catch {} }
+    const base = (accepts || []).find((a) => a.network === BASE) || (accepts || [])[0];
+    return { ok: false, status: 402, paymentRequired: true, price: base?.amount ? `${Number(base.amount) / 10 ** USDC_DECIMALS} USDC` : undefined, note: _initErr === 'no-key' ? 'no ROBINX_WALLET_KEY: nothing paid' : `x402 wallet init failed: ${_initErr}`, body: req };
+  }
+  const res = await wf(url, init);
+  const receipt = res.headers.get('PAYMENT-RESPONSE') || res.headers.get('X-PAYMENT-RESPONSE');
+  let paid_amount;
+  if (receipt) { try { paid_amount = Number(JSON.parse(Buffer.from(receipt, 'base64').toString()).amount) / 10 ** USDC_DECIMALS; } catch {} }
+  return { ok: res.ok, status: res.status, body: await res.json().catch(() => null), paid_usd: paid_amount, credits: res.headers.get('X-Nansen-Credits-Cost') };
+}
+
 // GET a RobinX endpoint. paid=false → plain fetch. paid=true → x402 auto-pay if a
 // wallet is configured; else return a structured "payment required" note.
 export async function callEndpoint(url, paid) {

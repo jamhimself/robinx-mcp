@@ -1,12 +1,12 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.jamhimself/robinx-mcp",
-  "description": "Robinhood Chain MCP server: rug checks, deployer records, measured X callers. For agents and bots.",
+  "description": "Robinhood Chain MCP server: the measured X call stream and the X + Telegram Omega signal for trading bots, caller track records, deployer records and token checks.",
   "repository": {
     "url": "https://github.com/jamhimself/robinx-mcp",
     "source": "github"
   },
-  "version": "0.6.2",
+  "version": "0.6.3",
   "websiteUrl": "https://robinx.io",
   "remotes": [
     {
@@ -18,7 +18,7 @@
     {
       "registryType": "npm",
       "identifier": "robinx-mcp",
-      "version": "0.6.2",
+      "version": "0.6.3",
       "transport": {
         "type": "stdio"
       },

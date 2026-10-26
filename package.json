@@ -1,8 +1,8 @@
 {
   "name": "robinx-mcp",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "mcpName": "io.github.jamhimself/robinx-mcp",
-  "description": "Robinhood Chain MCP server for AI agents and trading bots: rug checks, deployer reputation, measured X callers and live call signals. Free tools plus x402 pay-per-call (USDC on Base).",
+  "description": "Robinhood Chain MCP server for AI agents and trading bots: the measured X call stream, caller track records, deployer reputation and token checks. Free tools plus x402 pay-per-call (USDC on Base); the hosted server at api.robinx.io/mcp adds the X + Telegram Omega signal.",
   "type": "module",
   "bin": {
     "robinx-mcp": "server.js"

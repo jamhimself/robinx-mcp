@@ -1,8 +1,8 @@
 # RobinX: Robinhood Chain MCP server
 
-A **Robinhood Chain MCP server** for AI agents and trading bots: rug checks, deployer reputation, insider-flow detection, measured X callers and live call signals for **Robinhood Chain** (chain 4663) tokens, built from complete on-chain history. Gives any MCP agent (Claude Desktop, Cursor, …) a one-hop answer to *"who launched this token and should I trust it?"* — even seconds after launch, because it scores the deployer, not just the contract.
+A **Robinhood Chain MCP server** for AI agents and trading bots: the measured X call stream, caller track records, deployer reputation, insider-flow detection and token checks for **Robinhood Chain** (chain 4663) tokens, built from complete on-chain history. Gives any MCP agent (Claude Desktop, Cursor, …) a one-hop answer to *"who launched this token and should I trust it?"* — even seconds after launch, because it scores the deployer, not just the contract.
 
-**Remote, no install:** add `https://api.robinx.io/mcp` as a custom connector in Claude, ChatGPT or any MCP client. **Local:** `npx -y robinx-mcp` (below).
+**Remote, no install:** add `https://api.robinx.io/mcp` as a custom connector in Claude, ChatGPT or any MCP client; the hosted server also serves the X + Telegram Omega signal (`robinx_omega_signals`). **Local:** `npx -y robinx-mcp` (below).
 
 RobinX measures who is actually right about Robinhood Chain — callers and deployers graded against real price since chain genesis.
 
@@ -14,7 +14,7 @@ Paid tools settle **$0.01–0.05 USDC per call on Base** via the x402 protocol. 
 |---|---|---|
 | `robinx_stats` | free | Coverage stats: deployers scored, tokens indexed, insider-linked wallets flagged (discovery) |
 | `robinx_search` | free | Resolve a `$SYMBOL` / name / address to ranked contract candidates + symbol-collision warning (fake-ticker scam screen) |
-| `robinx_basket` | free | Live forward paper-basket — the lookahead-free public track record of the signal |
+| `robinx_basket` | free | Live forward paper-basket of the deployer score (public, dated) |
 | `robinx_wallet` | free | Wallet reputation for any address: deployer record + insider-flow history (off-market supply, WETH realized) |
 | `robinx_caller` | free | Caller Report Card: an X account's measured track record — early_rate, momentum_rate, median 1h forward return, cluster flag, recent calls (measured since chain genesis; calls preserved as captured) |
 | `robinx_report` | $0.05 | The full token dossier in one call: verdict + deployer history + measured X callers + basket status + forensics. |
@@ -22,10 +22,10 @@ Paid tools settle **$0.01–0.05 USDC per call on Base** via the x402 protocol. 
 | `robinx_entity` | $0.05 | A wallet's appearances across the accumulated holder-snapshot archive (balance then/now per token + identity) |
 | `robinx_pulse` | $0.04 | Real-time X synthesis: narrative, sentiment, red flags, and proven early-caller activity (measured lift, not follower counts) |
 | `robinx_structure` | $0.03 | Labeled holder-structure diff over ~24h: frozen/added/trimmed/exited wallets with identity + insider-linked labels, and a rotation/distribution/accumulation verdict. First GET queues a free scan (202, poll in ~15-60s) |
-| `robinx_verdict` | $0.02 | Composite buy-risk verdict: deployer reputation + insider-distribution flags + activity → `trusted / mixed / avoid / serial_spammer / new_deployer` with reasons |
-| `robinx_signals` | $0.02 | Pollable stream of fresh calls by measured early-callers (`since` cursor, `min_early_rate`, `limit`) — the event the call stream is built around |
-| `robinx_deployer` | $0.01 | Deployer rap sheet: launched / real / dead counts, best-token volume, insider flag, 0-100 score |
-| `robinx_token` | $0.01 | Token stats: swaps, WETH volume, unique traders, real-or-thin, linked deployer score |
+| `robinx_verdict` | $0.02 | Composite buy-risk verdict: deployer reputation + insider-distribution flags + activity → `trusted / mixed / avoid / serial_spammer / new_deployer / deployer_unknown` with reasons; `tokenized_stock` for one of Robinhood's own tokenized stocks or ETFs (a market, not a launch: no deployer judgment) |
+| `robinx_signals` | $0.02 | Pollable stream of fresh calls by measured early-callers (`since` cursor, `min_rank_score` default 0.3 = grade B, `min_early_rate` as an optional extra, `limit`) — the event the call stream is built around |
+| `robinx_deployer` | $0.01 | Deployer rap sheet: launched / real / dead counts, best-token volume, insider flag, 0-100 score (`stock_issuer`, no score, for Robinhood's tokenized-stock issuer) |
+| `robinx_token` | $0.01 | Token stats: swaps, WETH volume, unique traders, real-or-thin, linked deployer score (null with its basis for a tokenized stock) |
 | `robinx_feed` | $0.01 | Newest launches scored by deployer reputation — pollable (`min_score`, `since` cursor, `limit`) |
 | `robinx_callers` | $0.01 | Proven X caller-lift leaderboard: who measurably moves price (median 1h forward return + early-rate) |
 | `robinx_leaderboard` | $0.01 | Top trusted deployers: every wallet scoring >= 70, ranked — the watch-list of proven deployers with a graded record |

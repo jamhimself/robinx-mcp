@@ -1,3 +1,7 @@
 node_modules/
 .env
 *.key
+login.log
+mcp-publisher.exe
+mcp-publisher.tar.gz
+x402-buy.cjs
